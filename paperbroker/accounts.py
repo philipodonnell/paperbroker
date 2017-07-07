@@ -1,4 +1,4 @@
-from random import random
+import random
 import string
 
 from .positions import PositionGroup

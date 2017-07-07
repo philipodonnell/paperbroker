@@ -1,19 +1,12 @@
 import arrow
-from ..assets import asset_factory
-from ..quotes import quote_factory
+from ...assets import asset_factory
+from ...quotes import quote_factory
 
 
 class QuoteAdapter:
-    def get_quote(self, asset, quote_date=None, estimator=None):
-        """
-            The only method on adapters. Pass in a symbol or Asset and get a quote.
-            The default is to raise a NotImplemented exception
-        :param asset:
-        :param quote_date:
-        :return: a Quote object
-        """
-        # something like this
-        # asset = asset_factory(asset)
-        # quote = quote_factory(quote_date, asset, estimator=estimator)
-        # return quote
+    def get_quote(self, asset):
         raise NotImplementedError("QuoteAdapter.get_quote: You should subclass this and create an adapter.")
+
+    def get_option_quotes(self, underlying_asset, params:dict=None):
+        raise NotImplementedError("QuoteAdapter.get_option_quotes: You should subclass this and create an adapter.")
+

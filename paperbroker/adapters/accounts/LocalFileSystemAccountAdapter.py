@@ -5,7 +5,7 @@ import pickle
 from os import listdir
 from os.path import isfile, join
 
-class LocalFileSystemBookAdapter():
+class LocalFileSystemAccountAdapter():
 
     def __init__(self, root=None):
         if root is None: root = tempfile.gettempdir()
@@ -14,7 +14,8 @@ class LocalFileSystemBookAdapter():
         self.root = root
 
     def get_account(self, account_id: str, current_date=None):
-        return pickle.load(file=self.root + "/accounts/" + account_id + ".pickle")
+        with open(self.root + "/accounts/" + account_id + ".pickle", 'rb') as f:
+            return pickle.load(file=f)
 
     def has_account(self, account_id: str, current_date=None):
         try:
@@ -24,7 +25,8 @@ class LocalFileSystemBookAdapter():
             return False
 
     def put_account(self, account: Account, current_date=None):
-        pickle.dump(account, file=self.root + "/accounts/" + account.account_id + ".pickle")
+        with open(self.root + "/accounts/" + account.account_id + ".pickle", 'wb') as f:
+            pickle.dump(account, file=f)
 
     def get_account_ids(self, current_date=None):
         mypath = self.root + "/accounts/"

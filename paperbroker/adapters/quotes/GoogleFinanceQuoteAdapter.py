@@ -9,7 +9,7 @@ from googlefinance import getQuotes
 """
 class GoogleFinanceQuoteAdapter(QuoteAdapter):
 
-    def get_quote(self, asset, quote_date=None, estimator=None):
+    def get_quote(self, asset):
         # quote_date is ignored for this adapter
 
         asset = asset_factory(asset)
@@ -22,6 +22,9 @@ class GoogleFinanceQuoteAdapter(QuoteAdapter):
         if last_trade is None or last_trade == '':
             raise Exception("GoogleFinanceAdapter.get_quote: No quote found for {}".format(asset.symbol))
 
-        return quote_factory(quote_date=arrow.now().format('YYYY-MM-DD'), asset=asset, estimator=estimator)
+        return quote_factory(quote_date=arrow.now().format('YYYY-MM-DD'), asset=asset)
 
+
+    def get_option_quotes(self, underlying_asset, params:dict=None):
+        raise NotImplementedError("GoogleFinanceQuoteAdapter.get_option_quotes: Options quotes are not supported.")
 

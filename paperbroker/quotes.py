@@ -1,5 +1,7 @@
 import arrow
 from .assets import asset_factory, Option
+import ivolat3
+
 
 def quote_factory(quote_date, asset, price = None, estimator=None):
     asset = asset_factory(asset)
@@ -14,16 +16,16 @@ class Quote(object):
     def __init__(self, quote_date, asset, price=None, bid=0.0, ask=0.0, bid_size=0, ask_size=0):
         self.asset = asset_factory(asset)
         self.quote_date = quote_date
-        self.bid = 0.0
-        self.ask = 0.0
-        self.bid_size = 0
-        self.ask_size = None
-        self.price = price
+        self.bid = float(bid) if bid is not None else 0.0
+        self.ask = float(ask) if ask is not None else 0.0
+        self.bid_size = float(bid_size) if bid_size is not None else 0
+        self.ask_size = float(ask_size) if ask_size is not None else 0
+        self.price = float(price) if price is not None else None
 
-        if self.price is None and bid + ask != 0.0:
-            self.price = ((bid + ask) / 2)
+        if self.price is None and self.bid + self.ask != 0.0:
+            self.price = ((self.bid + self.ask) / 2)
 
-    def is_priceable(self, estimator=None, quantity=1):
+    def is_priceable(self):
         return self.price is not None
 
 
@@ -41,7 +43,9 @@ class OptionQuote(Quote):
         self.gamma = gamma
         self.vega = vega
         self.theta = theta
-        self.days_to_expiration = (arrow.get(quote_date) - arrow.get(asset.expiration_date)).days
+        self.days_to_expiration = (arrow.get(self.quote_date) - arrow.get(self.asset.expiration_date)).days
+
+
 
     def get_intrinsic_value(self, underlying_price = None):
         return self.asset.get_intrinsic_value(underlying_price=underlying_price)

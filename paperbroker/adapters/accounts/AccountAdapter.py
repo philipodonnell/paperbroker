@@ -1,6 +1,6 @@
 from ...accounts import Account
 
-class BookAdapter():
+class AccountAdapter():
 
     def get_account(self, account_id:str, current_date=None):
         raise NotImplementedError("BookAdapter.get_account: subclass me!")
