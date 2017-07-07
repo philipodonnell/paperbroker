@@ -31,10 +31,10 @@ class PositionGroup(object):
     def append(self, positions):
         return PositionGroup(copy(self._positions) + (positions if isinstance(positions, list) else [positions]))
 
-    def get_total_profit(self, estimator=None):
-        return self.get_total_price(estimator) - self.get_total_cost_basis()
+    def get_total_profit(self):
+        return self.get_total_price() - self.get_total_cost_basis()
 
-    def get_total_price(self, estimator=None):
+    def get_total_price(self):
 
         total_price = 0.0
 
@@ -44,9 +44,9 @@ class PositionGroup(object):
                 raise Exception("PositionGroup.get_total_price: A quote is required.")
 
             if isinstance(position.asset, Option):
-                total_price += position.quote.get_price(estimator=estimator) * position.quantity * 100
+                total_price += position.quote.price * position.quantity * 100
             else:
-                total_price += position.quote.get_price(estimator=estimator) * position.quantity * 1
+                total_price += position.quote.price * position.quantity * 1
 
         return total_price
 

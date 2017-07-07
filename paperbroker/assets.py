@@ -103,6 +103,24 @@ class Option(Asset):
 
         super(Option, self).__init__(symbol, self.option_type)
 
+    def get_extrinsic_value(self, underlying_price=None, price=None):
+        return (abs(price) - self.get_intrinsic_value(underlying_price=underlying_price)) if price is not None else None
+
+    def get_intrinsic_value(self, underlying_price=None):
+
+        if self.strike is None:
+            return None
+
+        if underlying_price is None:
+            return None
+
+        if self.option_type == 'call':
+            return max(underlying_price - self.strike, 0)
+        if self.option_type == 'put':
+            return max(self.strike - underlying_price, 0)
+
+        return None
+
 
 
 class Put(Option):
