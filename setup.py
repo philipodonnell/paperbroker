@@ -11,6 +11,7 @@ setup(name='paperbroker',
                 'paperbroker.adapters.accounts',
                 'paperbroker.adapters.quotes',
                 'paperbroker.adapters.markets',
-                'paperbroker.logic'
+                'paperbroker.logic',
+                'ivolat3'
                 ],
      )
