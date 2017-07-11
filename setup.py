@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='paperbroker',
-      version='0.0.3',
+      version='0.0.4',
       description='PaperBroker',
       author='Philip ODonnell',
       author_email='philip@postral.com',
@@ -12,6 +12,10 @@ setup(name='paperbroker',
                 'paperbroker.adapters.quotes',
                 'paperbroker.adapters.markets',
                 'paperbroker.logic',
-                'ivolat3'
                 ],
+        install_requires=[
+            'ivolat3',
+            'arrow',
+            'googlefinance',
+        ]
      )
