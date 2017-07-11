@@ -3,6 +3,8 @@ from copy import deepcopy, copy
 from .assets import *
 from .quotes import Quote
 
+from .assets import asset_factory
+
 class PositionGroup(object):
 
     """
@@ -76,8 +78,8 @@ class Position(object):
     Positions can also have an associated quote, which gives it the ability to calculate
     more things
     """
-    def __init__(self, asset: Asset, quantity: int, cost_basis: float=0.0, quote:Quote=None):
-        self.asset = asset
+    def __init__(self, asset, quantity: int, cost_basis: float=0.0, quote:Quote=None):
+        self.asset = asset_factory(asset)
         self.quantity = quantity
         self.cost_basis = cost_basis
         self.quote = quote

@@ -10,7 +10,6 @@ from googlefinance import getQuotes
 class GoogleFinanceQuoteAdapter(QuoteAdapter):
 
     def get_quote(self, asset):
-        # quote_date is ignored for this adapter
 
         asset = asset_factory(asset)
         google_quotes = getQuotes(asset.symbol)
@@ -24,7 +23,10 @@ class GoogleFinanceQuoteAdapter(QuoteAdapter):
 
         return quote_factory(quote_date=arrow.now().format('YYYY-MM-DD'), asset=asset)
 
-
-    def get_option_quotes(self, underlying_asset, params:dict=None):
+    def get_expiration_dates(self, underlying_asset=None):
         raise NotImplementedError("GoogleFinanceQuoteAdapter.get_option_quotes: Options quotes are not supported.")
+
+    def get_options(self, underlying_asset=None, expiration_date=None):
+        raise NotImplementedError("GoogleFinanceQuoteAdapter.get_options: Options quotes are not supported.")
+
 

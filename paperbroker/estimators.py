@@ -9,7 +9,7 @@ from math import copysign
 from .quotes import Quote
 
 
-class EstimatorBase:
+class Estimator:
     """
         THe mother of all estimators, midway between the bid and ask
     """
@@ -19,14 +19,23 @@ class EstimatorBase:
         return round((quote.bid + quote.ask) / 2, 2)
 
 
-class MidpointEstimator(EstimatorBase):
+class MidpointEstimator(Estimator):
     """
         The default estimator if nothing else is available, just passes through to estimator base
     """
 
+class FixedPriceEstimator(Estimator):
+    """
+        Used to force orders to fill at certain prices, such as for when options expire or testing
+    """
+    def __init__(self, price= 0.0):
+        self.price = price
+        return
 
+    def estimate(self, quote: Quote, quantity=None):
+        return self.price
 
-class SlippageEstimator(EstimatorBase):
+class SlippageEstimator(Estimator):
     """
         A price estimator assuming a certain slippage within the bid-ask spread.
 

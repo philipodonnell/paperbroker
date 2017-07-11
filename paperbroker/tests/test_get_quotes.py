@@ -78,8 +78,14 @@ class TestGetQuotes(unittest.TestCase):
         self.assertAlmostEqual(quote.ask, 0.27, places=2)
         self.assertAlmostEqual(quote.price, 0.255, places=3)
 
-    def test_get_option_quotes(self):
-        pass
+    def test_get_options(self):
+        self.quote_adapter.recorded_date = '2017-01-27'
+        broker = PaperBroker(quote_adapter=self.quote_adapter)
+        assets = broker.get_options(underlying_asset='AAL', expiration_date='2017-02-03')
+
+        self.assertIn('AAL170203P00046000', assets)
+
+
 
 
 
