@@ -6,5 +6,11 @@ setup(name='paperbroker',
       author='Philip ODonnell',
       author_email='philip@postral.com',
       url='https://github.com/philipodonnell/paperbroker',
-      packages=['paperbroker'],
+      packages=['paperbroker',
+                'paperbroker.adapters',
+                'paperbroker.adapters.accounts',
+                'paperbroker.adapters.quotes',
+                'paperbroker.adapters.markets',
+                'paperbroker.logic'
+                ],
      )
