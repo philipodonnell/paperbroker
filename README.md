@@ -14,22 +14,26 @@ This is a work in progress. Contributions are welcome!
 
 ## Installing paperbroker
 Install paperbroker directly from git
-    pip install git+https://github.com/philipodonnell#egg=paperbroker
+```    
+pip install git+https://github.com/philipodonnell#egg=paperbroker
+```
 
 ## Usage
 
+```python
 from paperbroker import PaperBroker
 
 # Creating a PaperBroker defaults to:
-#   - uses the local filesystem temp folder to store acounts
-#   - quotes from Google Finance (equities only)
-#   - estimates all transaction prices at the midpoint
+# - uses the local filesystem temp folder to store acounts
+# - quotes from Google Finance (equities only)
+# - estimates all transaction prices at the midpoint
 broker = PaperBroker()
 
 quote = broker.get_quote('GOOG')
 
-print(quote.price) # >>
-
+print(quote.price) 
+# >> 988.8
+```
 
 
 ## Credits
