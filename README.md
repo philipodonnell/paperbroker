@@ -48,7 +48,6 @@ print(quote.price)
 expiration_dates = broker.get_expiration_dates('GOOG')
 
 
-
 ```
 
 
