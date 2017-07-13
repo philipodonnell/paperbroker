@@ -16,13 +16,13 @@ from ..accounts import Account
 
         Underlying quote of AAL was
 
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
 
         Sample options prices
 
-        symbol              recorded_date  bid      ask
+        symbol              current_date  bid      ask
         AAL170203P00045500  2017-01-27     0.2400   0.2700
         AAL170203P00045500  2017-01-28     0.2800   0.3200
         AAL170203P00046000  2017-01-27     0.3500   0.3800
@@ -48,7 +48,7 @@ class TestClosingExpiredOptions(unittest.TestCase):
         pass
 
     def test_will_not_close_if_not_expired(self):
-        self.quote_adapter.recorded_date = '2017-01-27'
+        self.quote_adapter.current_date = '2017-01-27'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127P00048000', quantity=-1, cost_basis=(0.65 + 0.74)/2)
@@ -61,11 +61,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_otm_long_call(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127C00048000', quantity=1, cost_basis=0.08)
@@ -78,11 +78,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_itm_long_call(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127C00046000', quantity=1, cost_basis=(1.30 + 1.46) / 2)
@@ -98,11 +98,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_otm_long_put(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127P00046000', quantity=1, cost_basis=0.05)
@@ -116,11 +116,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_itm_long_put(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127P00048000', quantity=1, cost_basis=(0.65 + 0.74) / 2)
@@ -136,11 +136,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_otm_short_naked_call(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127C00048000', quantity=-1, cost_basis=0.08)
@@ -154,11 +154,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_itm_short_naked_call(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127C00046000', quantity=-1, cost_basis=(1.30 + 1.46) / 2)
@@ -174,11 +174,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_otm_short_naked_put(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127P00046000', quantity=-1, cost_basis=0.05)
@@ -192,11 +192,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_itm_short_naked_put(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127P00048000', quantity=-1, cost_basis=(0.65 + 0.74) / 2)
@@ -211,11 +211,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_otm_short_covered_call(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127C00048000', quantity=-1, cost_basis=0.08),
@@ -231,11 +231,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_itm_short_covered_call(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127C00046000', quantity=-1, cost_basis=(1.30 + 1.46) / 2),
@@ -250,11 +250,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_otm_short_covered_put(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127P00046000', quantity=-1, cost_basis=0.05),
@@ -271,11 +271,11 @@ class TestClosingExpiredOptions(unittest.TestCase):
 
     def test_itm_short_covered_put(self):
         """
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
         """
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         account = Account([
             Position(asset='AAL170127P00048000', quantity=-1, cost_basis=(0.65 + 0.74) / 2),

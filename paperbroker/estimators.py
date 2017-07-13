@@ -1,8 +1,11 @@
 """
 
-    Estimation tools for determine the likly price that an asset would transact at.
+    Estimation tools for determining the likely price that an asset would transact at.
 
-    No matter what value is passed in the quantity field
+    Make your own estimator by subclassing Estimator
+
+    If you need to force orders to go through you can use the FixedPriceEstimator to force the
+    market maker to fill at a specific price
 
 """
 from math import copysign

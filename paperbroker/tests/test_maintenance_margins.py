@@ -19,7 +19,7 @@ class TestMaintenanceMargins(unittest.TestCase):
         pass
 
     def test_get_maintenance_margin(self):
-        self.quote_adapter.recorded_date = '2017-01-27'
+        self.quote_adapter.current_date = '2017-01-27'
         positions = [
             Position(asset=Asset('AAL'), quantity=100),
             Position(asset=Call(underlying='AAL', strike=5, expiration_date=arrow.now()),

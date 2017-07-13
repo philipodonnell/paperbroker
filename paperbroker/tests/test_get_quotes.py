@@ -47,7 +47,7 @@ class TestGetQuotes(unittest.TestCase):
         pass
 
     def test_get_underlying_quote(self):
-        self.quote_adapter.recorded_date = '2017-01-27'
+        self.quote_adapter.current_date = '2017-01-27'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         quote = broker.get_quote('AAL')
 
@@ -58,7 +58,7 @@ class TestGetQuotes(unittest.TestCase):
 
 
     def test_get_underlying_quote_on_different_date(self):
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         quote = broker.get_quote('AAL')
 
@@ -69,7 +69,7 @@ class TestGetQuotes(unittest.TestCase):
 
 
     def test_get_option_quote(self):
-        self.quote_adapter.recorded_date = '2017-01-27'
+        self.quote_adapter.current_date = '2017-01-27'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
         quote = broker.get_quote('AAL170203P00045500')
 
@@ -79,11 +79,11 @@ class TestGetQuotes(unittest.TestCase):
         self.assertAlmostEqual(quote.price, 0.255, places=3)
 
     def test_get_options(self):
-        self.quote_adapter.recorded_date = '2017-01-27'
+        self.quote_adapter.current_date = '2017-01-27'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
-        assets = broker.get_options(underlying_asset='AAL', expiration_date='2017-02-03')
+        quotes = broker.get_options(underlying_asset='AAL', expiration_date='2017-02-03')
 
-        self.assertIn('AAL170203P00046000', assets)
+        self.assertIn('AAL170203P00046000', [_.asset for _ in quotes])
 
 
 

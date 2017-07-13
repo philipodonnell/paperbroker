@@ -1,5 +1,13 @@
+"""
+
+    Specialized classes for assets. Anything that can be represented by a symbol.
+    Overrides the == to make it easier
+    Use asset_factory() if you don't know if an object is a string or an asset
+    Logic within the asset classes is kept to a minimum to make it easier
+      to learn from the code. Most is in /paperbroker/logic/
+
+"""
 import arrow
-from math import copysign
 
 
 def asset_factory(symbol=None):
@@ -132,21 +140,4 @@ class Call(Option):
     def __init__(self, symbol: str = None, underlying = None,
                  underlying_symbol: str = None, strike: float = None, expiration_date=None):
         super(Call, self).__init__(symbol=symbol, option_type='call', underlying = underlying, strike=strike, expiration_date=expiration_date)
-
-
-if __name__ == "__main__":
-
-    o = Option(symbol = 'AAL161104C00027100')
-    assert o.symbol == 'AAL161104C00027100'
-    assert o.strike == 27.1
-    assert o.underlying.symbol == 'AAL'
-    assert o.expiration_date == '2016-11-04'
-    assert o.option_type == 'call'
-
-    o = Option(strike = 27.1, underlying = 'AAL', expiration_date = '2016-11-04', option_type = 'call')
-    assert o.symbol == 'AAL161104C00027100'
-    assert o.strike == 27.1
-    assert o.underlying.symbol == 'AAL'
-    assert o.expiration_date == '2016-11-04'
-    assert o.option_type == 'call'
 

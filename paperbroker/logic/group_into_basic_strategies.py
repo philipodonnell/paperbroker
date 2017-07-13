@@ -1,3 +1,27 @@
+"""
+
+    This module contains functions to group an arbitrary set of positions
+      into a number of strategies, each one of the following "basic" strategies
+
+    class AssetStrategy(BasicStrategy): A strategy that involves going long or short in an asset
+    class OffsetStrategy(BasicStrategy): A strategy that involves being simultaneously long and short the same asset
+    class CoveredStrategy(BasicStrategy): A strategy where an asset is used to cover the risk from the sale of an option
+    class SpreadStrategy(BasicStrategy): A strategy where two options with inverse risk profiles are used to create a defined risk
+
+    This is primarily used to calculate the maintenance margin requirement, but could be useful for other reasons
+    You could also inherit from these to create more specific strategies, like:
+        class NakedOptionStrategy(AssetStrategy): ?
+        class CreditSpreadStrategy(SpreadStrategy): ?
+
+    usage: group_into_basic_strategies(positions:Position)
+
+    Special thanks to /u/EdKaim for the outline of this process:
+    https://www.reddit.com/r/options/comments/6iivnu/generic_method_of_calculating_margin_requirements/dj7msph/
+
+"""
+
+
+
 from ..assets import Asset, Option, Call, Put
 from ..positions import Position
 
@@ -127,26 +151,26 @@ def _group_into_basic_strategies_in_underlying(underlying, positions):
     short_calls = []
     for call in [p for p in positions if
                  isinstance(p.asset, Option) and p.quantity < 0 and p.asset.option_type == 'call']:
-        for x in range(0, abs(call.quantity)):
+        for x in range(0, abs(int(call.quantity))):
             short_calls.append(AssetStrategy(asset=call.asset, quantity=-1))
 
     short_puts = []
     for put in [p for p in positions if
                  isinstance(p.asset, Option) and p.quantity < 0 and p.asset.option_type == 'put']:
-        for x in range(0, abs(put.quantity)):
+        for x in range(0, abs(int(put.quantity))):
             short_puts.append(AssetStrategy(asset=put.asset, quantity=-1))
 
     # get all the long calls/puts
     long_calls = []
     for call in [p for p in positions if
                  isinstance(p.asset, Option) and p.quantity > 0 and p.asset.option_type == 'call']:
-        for x in range(0, abs(call.quantity)):
+        for x in range(0, abs(int(call.quantity))):
             long_calls.append(AssetStrategy(asset=call.asset, quantity=1))
 
     long_puts = []
     for put in [p for p in positions if
                  isinstance(p.asset, Option) and p.quantity > 0 and p.asset.option_type == 'put']:
-        for x in range(0, abs(put.quantity)):
+        for x in range(0, abs(int(put.quantity))):
             long_puts.append(AssetStrategy(asset=put.asset, quantity=1))
 
     # sort by in the moneyness

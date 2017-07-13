@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='paperbroker',
-      version='0.0.5',
+      version='0.0.6',
       description='PaperBroker',
       author='Philip ODonnell',
       author_email='philip@postral.com',

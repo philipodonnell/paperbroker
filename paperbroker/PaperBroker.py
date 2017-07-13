@@ -1,3 +1,14 @@
+"""
+
+    PaperBroker
+
+    Instantiate this with:
+        from paperbroker import PaperBroker
+        broker = PaperBroker()
+
+    There is minimal logic here
+
+"""
 from .adapters.quotes import QuoteAdapter
 from .adapters.quotes import GoogleFinanceQuoteAdapter
 
@@ -12,6 +23,7 @@ from .orders import Order
 from .estimators import Estimator
 from .assets import Asset, asset_factory
 
+from .logic.validate_account import validate_account
 
 class PaperBroker():
 
@@ -72,16 +84,9 @@ class PaperBroker():
         self.account_adapter.put_account(account)
         return account
 
-
     def simulate_order(self, account: Account, order: Order, estimator:Estimator=None):
         account_after = self.market_adapter.simulate_order(account=account, order=order, estimator=estimator)
-
-        if account_after.cash < 0:
-            raise Exception('PaperBroker.simulate_order: You do not have enough cash for this order.')
-
-        if account_after.cash < account.maintenance_margin:
-            raise Exception('PaperBroker.simulate_order: You do not have enough cash to cover the margin requirement.')
-
+        validate_account(account_after)
         return account_after
 
     def close_position(self, account:Account, position=None):

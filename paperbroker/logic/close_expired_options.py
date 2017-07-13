@@ -1,3 +1,13 @@
+"""
+
+    Logic required to close out any expired options and properly handle the resulting positions.
+    I'm pretty sure it covers every possible outcome, but could use a through code review.
+
+"""
+
+
+
+
 import arrow
 from ..accounts import Account
 from ..assets import Option, Call, Put, Asset
@@ -5,7 +15,6 @@ from ..adapters.quotes.QuoteAdapter import QuoteAdapter
 from ..orders import Order, Leg
 from ..positions import Position
 
-from .group_into_basic_strategies import create_asset_strategies
 from ..adapters.markets import MarketAdapter
 
 from copy import copy
@@ -14,7 +23,9 @@ from math import copysign
 
 def drain_asset(positions, asset, quantity):
     """
-        Iterate through the positions and decrease the quantity until you have drained all the positions
+        Generic method of reducing the quantity of assets across an entire set of positions
+        This is hard to do manually because positions can duplicates and arbitrary quantities
+        Traverse the entire position set reducing quantities to zero until it hits the target reduction
     """
     remaining_quantity = quantity
 

@@ -1,10 +1,17 @@
+"""
+
+    Order fill logic. Feels good but could use a through code review.
+
+"""
+
+
+
 from ..orders import Order
 from ..accounts import Account
 from ..assets import Option
 from ..positions import Position
 from ..adapters.quotes import QuoteAdapter
 from ..estimators import Estimator
-from copy import deepcopy
 from math import copysign
 from .maintenance_margin import get_maintenance_margin
 

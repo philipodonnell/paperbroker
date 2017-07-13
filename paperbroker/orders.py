@@ -1,3 +1,9 @@
+"""
+
+    Just a few ordering classes. Again, minimal logic.
+
+"""
+
 from .assets import Asset, asset_factory
 
 class Leg(object):

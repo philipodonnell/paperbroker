@@ -1,13 +1,21 @@
+"""
+
+    Uses the supplied positions to estimate the total cumulative margin requirement.
+
+    Uses each basic strategy to calculate the margin of each and adds them up.
+
+"""
+
+
+
+
 import arrow
 
 from ..assets import Asset, Option
 from ..adapters.quotes.QuoteAdapter import QuoteAdapter
 from .group_into_basic_strategies import *
 
-"""
-Special thanks to /u/EdKaim for the outline of this process:
-https://www.reddit.com/r/options/comments/6iivnu/generic_method_of_calculating_margin_requirements/dj7msph/
-"""
+
 
 def get_maintenance_margin(strategies=None, positions=None, quote_adapter:QuoteAdapter=None):
 

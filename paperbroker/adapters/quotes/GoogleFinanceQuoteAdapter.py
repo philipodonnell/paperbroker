@@ -1,6 +1,6 @@
 import arrow
 from ...assets import asset_factory, Option
-from ...quotes import quote_factory, OptionQuote, Quote
+from ...quotes import OptionQuote, Quote
 from .QuoteAdapter import QuoteAdapter
 from googlefinance import getQuotes
 

@@ -1,11 +1,8 @@
 from ...orders import Order
 from ...accounts import Account
-from ...assets import Option, asset_factory, Asset
-from ...positions import Position
 from ...adapters.quotes import QuoteAdapter
 from ...estimators import Estimator
 from copy import deepcopy
-from math import copysign
 
 from .MarketAdapter import MarketAdapter
 

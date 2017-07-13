@@ -1,3 +1,8 @@
+"""
+
+    Objects representing quotes. Simple right now.
+
+"""
 import arrow
 from .assets import asset_factory, Option
 from .logic.ivolat3_option_greeks import get_option_greeks

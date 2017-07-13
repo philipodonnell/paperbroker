@@ -51,7 +51,7 @@ class TestFillOrder(unittest.TestCase):
         pass
 
     def test_ordering(self):
-        self.quote_adapter.recorded_date = '2017-01-27'
+        self.quote_adapter.current_date = '2017-01-27'
         broker = PaperBroker(quote_adapter=self.quote_adapter)
 
         asset = 'AAL'
@@ -86,7 +86,7 @@ class TestFillOrder(unittest.TestCase):
         assert a.positions[1].asset == option2
         assert a.positions[1].quantity == -2
 
-        self.quote_adapter.recorded_date = '2017-01-28'
+        self.quote_adapter.current_date = '2017-01-28'
 
         o = Order()
         o.add_leg(asset=option2, quantity=1, order_type='btc')

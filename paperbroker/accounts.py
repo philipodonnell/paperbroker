@@ -1,3 +1,11 @@
+"""
+
+    Brokerage Accounts.
+    Keeps track of positions.
+    Read and Save with a /paperbroker/adapters/accounts/AccountAdapter
+
+"""
+
 import random
 import string
 
