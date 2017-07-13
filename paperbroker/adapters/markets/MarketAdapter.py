@@ -1,6 +1,6 @@
 from ...accounts import Account
 from ...orders import Order
-from ...estimators import Estimator
+
 
 class MarketAdapter():
 

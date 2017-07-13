@@ -14,7 +14,7 @@ from ..logic.ivolat3_option_greeks import get_option_greeks
     AAL between 2017-01-27 and 2017-01-28 (Jan expiration + earnings) and between 2017-03-24 and 2017-03-25 (March expiration)
     GOOG between 2017-01-27 and 2017-01-28 (Jan expiration) and between 2017-03-24 and 2017-03-25 (March expiration)
 
-    Data is csv/gzip in the format [symbol],[recorded_date],[bid],[ask]
+    Data is csv/gzip in the format [symbol],[current_date],[bid],[ask]
 
     A selection of data is included below for easy reference to prevent needing to
       open the file for math. Note that prices are as recorded @ approx 11am EST.
@@ -23,13 +23,13 @@ from ..logic.ivolat3_option_greeks import get_option_greeks
 
         Underlying quote of AAL was
 
-        symbol  recorded_date  bid       ask
+        symbol  current_date  bid       ask
         AAL     2017-01-27     47.3500   47.3700
         AAL     2017-01-28     46.9000   47.0000
 
         Sample options prices
 
-        symbol              recorded_date  bid      ask
+        symbol              current_date  bid      ask
         AAL170203P00045500  2017-01-27     0.2400   0.2700
         AAL170203P00045500  2017-01-28     0.2800   0.3200
         AAL170203P00046000  2017-01-27     0.3500   0.3800
@@ -45,7 +45,7 @@ from ..logic.ivolat3_option_greeks import get_option_greeks
         AAL170203P00048500  2017-01-27     1.5000   1.5900
         AAL170203P00048500  2017-01-28     1.7600   1.8300
 
-    Set the date you would like quotes for by setting the self.recorded_date property
+    Set the date you would like quotes for by setting the self.current_date property
 
 """
 
@@ -56,8 +56,8 @@ if 'testdata_keyvalue_cache' not in globals():
 
 class TestDataQuoteAdapter(QuoteAdapter):
 
-    def __init__(self, recorded_date='2017-03-24'):
-        self.recorded_date = arrow.get(recorded_date).format('YYYY-MM-DD')
+    def __init__(self, current_date='2017-03-24'):
+        self.current_date = arrow.get(current_date).format('YYYY-MM-DD')
 
 
     def load_testdata_cache(self):
@@ -99,8 +99,8 @@ class TestDataQuoteAdapter(QuoteAdapter):
         if testdata_keyvalue_cache is None:
             self.load_testdata_cache()
 
-        if testdata_keyvalue_cache.get(asset.symbol + arrow.get(self.recorded_date).format('YYYY-MM-DD'), None) is not None:
-            return testdata_keyvalue_cache.get(asset.symbol + arrow.get(self.recorded_date).format('YYYY-MM-DD'))
+        if testdata_keyvalue_cache.get(asset.symbol + arrow.get(self.current_date).format('YYYY-MM-DD'), None) is not None:
+            return testdata_keyvalue_cache.get(asset.symbol + arrow.get(self.current_date).format('YYYY-MM-DD'))
 
         return None
 
@@ -110,16 +110,16 @@ class TestDataQuoteAdapter(QuoteAdapter):
         if testdata_keyvalue_cache is None:
             self.load_testdata_cache()
 
-        return [quote.asset for quote in testdata_keyvalue_cache.values()
+        return [quote for quote in testdata_keyvalue_cache.values()
                 if isinstance(quote, OptionQuote)
-                and quote.quote_date == self.recorded_date
+                and quote.quote_date == self.current_date
                 and quote.asset.underlying == (underlying_asset if underlying_asset is not None else quote.asset.underlying)
                 and quote.asset.expiration_date == (expiration_date if expiration_date is not None else quote.asset.expiration_date)
         ]
 
 
     def get_expiration_dates(self, underlying_asset=None):
-        return list(set([quote.asset.expiration_date for quote in self.get_options(underlying_asset)]))
+        return sorted(list(set([quote.asset.expiration_date for quote in self.get_options(underlying_asset)])))
 
 
 
@@ -145,7 +145,7 @@ class TestDataQuoteAdapter(QuoteAdapter):
         option_quotes = [quote for quote in testdata_keyvalue_cache.values()
                    if
                    isinstance(quote, OptionQuote) and
-                   quote.quote_date == (self.recorded_date if self.recorded_date is not None else quote.quote_date) and
+                   quote.quote_date == (self.current_date if self.current_date is not None else quote.quote_date) and
                    quote.asset.underlying == (underlying_asset if underlying_asset is not None else quote.asset.underlying) and
                    abs(quote.delta) >= defaults['min_abs_delta'] and
                    abs(quote.delta) <= defaults['max_abs_delta'] and

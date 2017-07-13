@@ -26,29 +26,8 @@ class PaperMarketAdapter(MarketAdapter):
         self.quote_adapter = quote_adapter
         self.estimator = estimator if estimator is not None else Estimator()
 
-    """
-    def buy_to_open(self, account: Account=None, asset:Asset=None, quantity = 1):
-        o = Order()
-        o.add_leg(asset=asset_factory(asset), quantity=abs(quantity), order_type='bto')
-        self.enter_order(account, o)
-    def sell_to_open(self, account: Account=None, asset:Asset=None, quantity = 1):
-        o = Order()
-        o.add_leg(asset=asset_factory(asset), quantity=abs(quantity)*-1, order_type='sto')
-        self.enter_order(account, o)
-    def buy_to_close(self, account: Account=None, asset:Asset=None, quantity = 1):
-        o = Order()
-        o.add_leg(asset=asset_factory(asset), quantity=abs(quantity), order_type='btc')
-        self.enter_order(account, o)
-    def sell_to_close(self, account: Account=None, asset:Asset=None, quantity = 1):
-        o = Order()
-        o.add_leg(asset=asset_factory(asset), quantity=abs(quantity)*-1, order_type='stc')
-        self.enter_order(account, o)
-    """
-
     def expire_options(self, account:Account, quote_adapter:QuoteAdapter):
         close_expired_options(account=account, quote_adapter=quote_adapter, market_adapter=self)
-
-
 
     # fill any open orders that the broker knows about
     # # if it is possible to fill the order
@@ -56,10 +35,6 @@ class PaperMarketAdapter(MarketAdapter):
     def fill_pending_orders(self, cancel_on_failure = True):
         for pending_order in self.pending_orders:
             try:
-
-                # check the validation again in case something changed
-                self.simulate_order(account=pending_order.account,
-                        order = pending_order.order)
 
                 #actually fill the order
                 fill_order(account=pending_order.account,
@@ -74,6 +49,8 @@ class PaperMarketAdapter(MarketAdapter):
                 print("Order failed to execute")
                 print(e)
                 pass
+
+        self.pending_orders = [_ for _ in self.pending_orders if _.order.status != 'filled']
 
         if cancel_on_failure:
             self.pending_orders = []
@@ -96,10 +73,11 @@ class PaperMarketAdapter(MarketAdapter):
         return account_copy
 
 
-    def enter_order(self, account: Account, order: Order, estimator:Estimator=None):
+    def enter_order(self, account: Account, order: Order, estimator:Estimator=None, auto_fill=True):
         estimator = estimator if estimator is not None else self.estimator
-        self.simulate_order(account=account, order=order)
         self.pending_orders.append(PendingOrder(account=account, order=order, estimator=estimator))
-
+        if auto_fill:
+            self.fill_pending_orders()
+        return account
 
 

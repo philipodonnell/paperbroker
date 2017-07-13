@@ -49,8 +49,6 @@ def get_option_greeks(option_type, strike, underlying_price, days_to_expiration,
     # annual volatility of stock price
     # sigma = 0.2
 
-    out = {}
-
     # call opition implied volatility
     sigma = ivolat3.ivolat_call(s, k, r, q, t, p) if option_type == 'call' else ivolat3.ivolat_put(s, k, r, q, t, p)
 
@@ -58,9 +56,7 @@ def get_option_greeks(option_type, strike, underlying_price, days_to_expiration,
         # means sigma is not a number
         # but everything else needs it so bail
         #we were unable to calculate implied volatility which is the base of all the other calculations
-        #record it as 0.0.
-        # no iv means no iv
-        out['iv'] = 0.0
+        # no iv means no greeks
         return out
 
     out['iv'] = sigma

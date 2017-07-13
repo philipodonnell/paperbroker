@@ -6,6 +6,7 @@ from ..adapters.quotes import QuoteAdapter
 from ..estimators import Estimator
 from copy import deepcopy
 from math import copysign
+from .maintenance_margin import get_maintenance_margin
 
 
 def fill_order(account: Account = None, order: Order = None, quote_adapter:QuoteAdapter=None, estimator:Estimator=None):
@@ -78,7 +79,7 @@ def fill_order(account: Account = None, order: Order = None, quote_adapter:Quote
 
     # filter out any positions that are completely closed
     account.positions = [position for position in account.positions if position.quantity != 0]
-
+    account.maintenance_margin = get_maintenance_margin(positions=account.positions, quote_adapter=quote_adapter)
     order.status = 'filled'
 
     return account
