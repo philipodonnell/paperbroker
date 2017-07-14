@@ -180,6 +180,7 @@ print(account.cash, account.maintenance_margin, len(account.positions))
 long_call_position = [_ for _ in account.positions if _.asset == fifty_delta_call_quote.asset][0]
 
 # there is a shortcut to close existing positions by passing them to the broker directly
+# once we sell this long call we will be left with the naked short call from the covered call
 # the maintenance margin is null because we don't have an implementation for naked call margin yet
 # check out paperbroker/logic/maintenance_margin.py if you can help
 broker.close_position(account, long_call_position)
