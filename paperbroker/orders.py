@@ -26,7 +26,7 @@ class Order(object):
                 price: float = None):
 
         asset = asset_factory(asset)
-
+        quantity = int(quantity)
         if leg is not None:
             if len([_.asset.symbol for _ in self.legs if _.asset == leg.asset]) > 0:
                 raise Exception("Order.add_leg symbol {} already exists within this order".format(leg.asset.symbol))

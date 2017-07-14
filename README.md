@@ -9,6 +9,7 @@ When I was learning to trade options I needed a free API-driven broker simulatio
 - Automatically handles option expirations
 - Interchangable, extensible, transaction pricing estimators
 - 4 days of real option pricing data included for development and testing
+- Optional Flask-based HTTP REST/JSON server
 
 Contributors and contributions are welcome! My hope is that this codebase will grow beyond my original use case to help many more people learn about options trading and investment. More is coming very soon, including:
 
@@ -28,12 +29,26 @@ This is a work in progress and under active development. It is not suited for pr
 - Educate and inform newcomers about how a brokerage operation works, manages positions, fills orders and calculates margins.
 
 ## Installing paperbroker
-Install paperbroker directly from git. I recommend and test on windows 10 and ubuntu.
+
+If you are going to use paperbroker as a package, install it directly from git.
 ```
 pip install git+https://github.com/philipodonnell#egg=paperbroker
 ```
 
+If you are going to use paperbroker as an HTTP server, clone it directly
+```
+git clone https://github.com/philipodonnell/paperbroker
+cd paperbroker
+python3 server.py
+```
+
+I recommend and test on Windows 10 and Ubuntu.
+
 ## Usage Examples
+
+These illustrate the basic ordering flow of PaperBroker when used as a package. Many (but not all) of
+these functions are available through the HTTP api. See /paperbroker/server.py for more details
+
 
 ```python
 from paperbroker import PaperBroker
