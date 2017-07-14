@@ -1,6 +1,20 @@
 # paperbroker
 A python3 open source simulated brokerage for paper trading, algorithms and backtesting. Trade stocks, bonds, options and many other securities via adapters.
 
+```
+To use the package:
+
+pip install git+https://github.com/philipodonnell#egg=paperbroker
+from paperbroker import PaperBroker
+broker=PaperBroker()
+
+or to use the HTTP REST/JSON API:
+
+git clone https://github.com/philipodonnell/paperbroker
+cd paperbroker
+python3 server.py
+```
+
 ## Features
 When I was learning to trade options I needed a free API-driven broker simulation that understood options so that I could paper trade my strategies. I built `paperbroker` to meet that need and I hope it will help you too.
 
