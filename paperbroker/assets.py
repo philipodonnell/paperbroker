@@ -42,7 +42,7 @@ class Asset():
 
     def __init__(self, symbol: str=None, asset_type: str=None):
         self.symbol = symbol.upper()
-        self.asset_type = asset_type
+        self.asset_type = asset_type or 'asset'
         return
 
     def __eq__(self, other):

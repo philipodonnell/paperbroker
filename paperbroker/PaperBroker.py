@@ -87,12 +87,13 @@ class PaperBroker():
     def simulate_order(self, account: Account, order: Order, estimator:Estimator=None):
         account_after = self.market_adapter.simulate_order(account=account, order=order, estimator=estimator)
         validate_account(account_after)
+        account_after.account_id = account_after.account_id + "_simulated_order"
         return account_after
 
-    def close_position(self, account:Account, position=None):
-        return self.close_positions(account, [position])
+    def close_position(self, account:Account, position=None, simulate=False):
+        return self.close_positions(account, [position], simulate=simulate)
 
-    def close_positions(self, account:Account, positions=None):
+    def close_positions(self, account:Account, positions=None, simulate=False):
         if positions is None:
             positions = []
 
@@ -112,7 +113,7 @@ class PaperBroker():
         for b in btc.keys():
             o.add_leg(order_type = 'btc', asset=assets_by_symbol[b], quantity=abs(btc[b]))
 
-        self.enter_order(account, o)
+        return self.enter_order(account=account, order=o, simulate=simulate)
 
 
 

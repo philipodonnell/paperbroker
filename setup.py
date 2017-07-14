@@ -17,5 +17,7 @@ setup(name='paperbroker',
             'ivolat3',
             'arrow',
             'googlefinance',
+            'flask',
+            'jsonpickle'
         ]
      )
