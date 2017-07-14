@@ -58,10 +58,47 @@ python3 server.py
 
 I recommend and test on Windows 10 and Ubuntu.
 
+## Testing
+
+Unit tests are available in /paperbroker/tests. More tests are always appreciated.
+
+To make testing of algorithms and itself easier, PaperBroker includes several days of quotes data for all underlyings and options/chains for the following:
+
+- AAL between 2017-01-27 and 2017-01-28 (Jan expiration + earnings) and between 2017-03-24 and 2017-03-25 (March expiration)
+- GOOG between 2017-01-27 and 2017-01-28 (Jan expiration) and between 2017-03-24 and 2017-03-25 (March expiration)
+
+To use this data, create your PaperBroker and pass the TestDataQuoteAdapter explicitly
+
+```python
+from paperbroker import PaperBroker
+from paperbroker.tests.TestDataQuoteAdapter import TestDataQuoteAdapter
+
+# instantiate the test data adapter
+test_data = TestDataQuoteAdapter()
+
+#control which dates are currently effective
+test_data.current_date = '2017-01-27'
+
+# pass the test data adapter explicitly
+broker = PaperBroker(quote_adapter=test_data)
+
+# now all broker functions (quotes/orders/etc...) will act as if it is Jan 27, 2017
+broker.get_quote('AAL')
+# >> 2017-01-27 47.35
+
+# change the effective date
+test_data.current_date = '2017-01-28'
+
+# now all broker functions (quotes/orders/etc...) will act as if it is Jan 28, 2017
+broker.get_quote('AAL')
+# >> 2017-01-28 46.90
+
+```
+
 ## Usage Examples
 
-These illustrate the basic ordering flow of PaperBroker when used as a package. Many (but not all) of
-these functions are available through the HTTP api. See /paperbroker/server.py for more details
+These illustrate the basic ordering flow of PaperBroker when used as a package with the stock GoogleFinance quote data.
+Many (but not all) of these functions are available through the HTTP api. See /paperbroker/server.py for more details
 
 
 ```python
