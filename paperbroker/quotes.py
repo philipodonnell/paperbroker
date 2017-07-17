@@ -8,12 +8,12 @@ from .assets import asset_factory, Option
 from .logic.ivolat3_option_greeks import get_option_greeks
 
 
-def quote_factory(quote_date, asset, price = None, estimator=None):
+def quote_factory(quote_date, asset, price=None, bid=0.0, ask=0.0, bid_size=0, ask_size=0, underlying_price=None):
     asset = asset_factory(asset)
     if isinstance(asset, Option):
-        return OptionQuote(quote_date, asset, price, estimator)
+        return OptionQuote(quote_date, asset, price=price, bid=bid, ask=ask, bid_size=bid_size, ask_size=ask_size, underlying_price=None)
     else:
-        return Quote(quote_date, asset, price, estimator)
+        return Quote(quote_date, asset, price=price, bid=bid, ask=ask, bid_size=bid_size, ask_size=ask_size)
 
 
 class Quote(object):
@@ -44,9 +44,10 @@ class OptionQuote(Quote):
             raise Exception("OptionQuote(Quote): Must pass an option to create an option quote");
         self.quote_type = 'option'
         self.days_to_expiration = (arrow.get(self.asset.expiration_date) - arrow.get(self.quote_date)).days
+        self.underlying_price = underlying_price
 
-        if self.is_priceable() and underlying_price is not None:
-            greeks = get_option_greeks(self.asset.option_type, self.asset.strike, underlying_price, self.days_to_expiration, self.price, dividend=0.0)
+        if self.is_priceable() and self.underlying_price is not None:
+            greeks = get_option_greeks(self.asset.option_type, self.asset.strike, self.underlying_price, self.days_to_expiration, self.price, dividend=0.0)
             self.delta = greeks['delta']
             self.iv = greeks['iv']
             self.gamma = greeks['gamma']
@@ -64,10 +65,10 @@ class OptionQuote(Quote):
     def has_greeks(self):
         return self.iv is not None
 
-    def get_intrinsic_value(self, underlying_price = None):
-        return self.asset.get_intrinsic_value(underlying_price=underlying_price)
+    def get_intrinsic_value(self, underlying_price=None):
+        return self.asset.get_intrinsic_value(underlying_price=underlying_price or self.underlying_price)
 
     def get_extrinsic_value(self, underlying_price=None):
-        return self.asset.get_extrinsic_value(underlying_price=underlying_price, price=self.price)
+        return self.asset.get_extrinsic_value(underlying_price=underlying_price or self.underlying_price, price=self.price)
 
 
