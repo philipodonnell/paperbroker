@@ -129,6 +129,8 @@ class Option(Asset):
 
         return None
 
+    def get_days_to_expiration(self, as_of_date):
+        return (arrow.get(self.expiration_date) - arrow.get(as_of_date)).days
 
 
 class Put(Option):

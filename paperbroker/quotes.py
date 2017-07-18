@@ -43,7 +43,7 @@ class OptionQuote(Quote):
         if not isinstance(self.asset, Option):
             raise Exception("OptionQuote(Quote): Must pass an option to create an option quote");
         self.quote_type = 'option'
-        self.days_to_expiration = (arrow.get(self.asset.expiration_date) - arrow.get(self.quote_date)).days
+        self.days_to_expiration = self.asset.get_days_to_expiration(quote_date)
         self.underlying_price = underlying_price
 
         if self.is_priceable() and self.underlying_price is not None:
