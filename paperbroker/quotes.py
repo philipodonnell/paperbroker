@@ -30,6 +30,8 @@ class Quote(object):
         if self.price is None and self.bid + self.ask != 0.0:
             self.price = ((self.bid + self.ask) / 2)
 
+        self.delta = 1.0
+
     def is_priceable(self):
         return self.price is not None
 
@@ -46,14 +48,16 @@ class OptionQuote(Quote):
         self.days_to_expiration = self.asset.get_days_to_expiration(quote_date)
         self.underlying_price = underlying_price
 
+        self.delta = None
+
         if self.is_priceable() and self.underlying_price is not None:
             greeks = get_option_greeks(self.asset.option_type, self.asset.strike, self.underlying_price, self.days_to_expiration, self.price, dividend=0.0)
-            self.delta = greeks['delta']
-            self.iv = greeks['iv']
-            self.gamma = greeks['gamma']
-            self.vega = greeks['vega']
-            self.theta = greeks['theta']
-            self.rho = greeks['rho']
+            self.delta = greeks['delta'] * 100
+            self.iv = greeks['iv'] * 100
+            self.gamma = greeks['gamma'] * 100
+            self.vega = greeks['vega'] * 100
+            self.theta = greeks['theta'] * 100
+            self.rho = greeks['rho'] * 100
         else:
             self.delta = delta
             self.iv = iv
@@ -71,4 +75,14 @@ class OptionQuote(Quote):
     def get_extrinsic_value(self, underlying_price=None):
         return self.asset.get_extrinsic_value(underlying_price=underlying_price or self.underlying_price, price=self.price)
 
+    @property
+    def strike(self):
+        return self.asset.strike
 
+    @property
+    def expiration_date(self):
+        return self.asset.expiration_date
+
+    @property
+    def option_type(self):
+        return self.asset.option_type
