@@ -112,6 +112,16 @@ def enter_order(account_id: str, simulate=None):
     return json(broker.enter_order(account = broker.get_account(account_id=account_id), order=order, simulate=simulate))
 
 
+@app.route('/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path or 'index.html')
+
+
+@app.route('/')
+def send_index():
+    return send_from_directory('static', 'index.html')
+
+
 
 """
 
