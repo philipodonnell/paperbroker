@@ -11,8 +11,8 @@ broker=PaperBroker()
 or to use the HTTP REST/JSON API:
 
 git clone https://github.com/philipodonnell/paperbroker
-cd paperbroker
-python3 server.py
+
+install dependencies and execute with python server.py
 ```
 
 ## Features
