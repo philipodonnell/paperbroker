@@ -58,7 +58,7 @@ def fill_order(account: Account = None, order: Order = None, quote_adapter:Quote
             # if the leg is opening, then create a position for each leg
             if leg.order_type.lower() in ['bto', 'sto']:
 
-                account.positions.append(Position(leg.asset, leg.quantity, cost_basis))
+                account.positions.append(Position(leg.asset, leg.quantity, cost_basis, quote=quote_adapter.get_quote(leg.asset)))
 
             elif leg.order_type.lower() in ['btc', 'stc']:
 
