@@ -41,6 +41,8 @@ class PaperBroker():
 
     def get_options(self, underlying_asset=None, expiration_date=None):
         return self.quote_adapter.get_options(underlying_asset, expiration_date)
+    def get_option_quotes(self, underlying_asset=None, expiration_date=None):
+        return self.get_options(underlying_asset=underlying_asset, expiration_date=expiration_date)
 
     def get_expiration_dates(self, underlying_asset=None):
         return self.quote_adapter.get_expiration_dates(underlying_asset)
