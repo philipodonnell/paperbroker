@@ -8,6 +8,7 @@ from .MarketAdapter import MarketAdapter
 
 from ...logic.fill_order import fill_order
 from ...logic.close_expired_options import close_expired_options
+from ...OrderImpact import OrderImpact
 
 class PendingOrder():
     def __init__(self, order: Order = None, account: Account = None, estimator: Estimator=None):
@@ -67,7 +68,7 @@ class PaperMarketAdapter(MarketAdapter):
         # now fill this order against a copy of the account
         fill_order(account=account_copy, order=order_copy, estimator=estimator, quote_adapter=self.quote_adapter)
 
-        return account_copy
+        return OrderImpact(account0 = account, account1 = account_copy, order = order_copy, actual_commission = None, actual_fill_price = None)
 
 
     def enter_order(self, account: Account, order: Order, estimator:Estimator=None, auto_fill=True):

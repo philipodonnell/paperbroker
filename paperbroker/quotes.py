@@ -4,6 +4,7 @@
 
 """
 import arrow
+import math
 from .assets import asset_factory, Option
 from .logic.ivolat3_option_greeks import get_option_greeks
 
@@ -52,12 +53,13 @@ class OptionQuote(Quote):
 
         if self.is_priceable() and self.underlying_price is not None:
             greeks = get_option_greeks(self.asset.option_type, self.asset.strike, self.underlying_price, self.days_to_expiration, self.price, dividend=0.0)
-            self.delta = greeks['delta'] * 100
-            self.iv = greeks['iv'] * 100
-            self.gamma = greeks['gamma'] * 100
-            self.vega = greeks['vega'] * 100
-            self.theta = greeks['theta'] * 100
-            self.rho = greeks['rho'] * 100
+
+            self.delta = (greeks['delta'] * 100) if greeks['delta'] is not None and not math.isnan(greeks['delta']) else delta
+            self.iv = (greeks['iv'] * 100) if greeks['iv'] is not None and not math.isnan(greeks['iv']) else iv
+            self.gamma = (greeks['gamma'] * 100) if greeks['gamma'] is not None and not math.isnan(greeks['gamma']) else gamma
+            self.vega = (greeks['vega'] * 100) if greeks['vega'] is not None and not math.isnan(greeks['vega']) else vega
+            self.theta = (greeks['theta'] * 100) if greeks['theta'] is not None and not math.isnan(greeks['theta']) else theta
+            self.rho = (greeks['rho'] * 100) if greeks['rho'] is not None and not math.isnan(greeks['rho']) else rho
         else:
             self.delta = delta
             self.iv = iv

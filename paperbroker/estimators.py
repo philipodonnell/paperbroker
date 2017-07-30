@@ -17,9 +17,14 @@ class Estimator:
         THe mother of all estimators, midway between the bid and ask
     """
     def estimate(self, quote:Quote, quantity = None):
-        if quote.bid is None or quote.ask is None or quote.bid == 0.0 or quote.ask == 0.0:
-            raise Exception('EstimatorBase.estimate: Cannot estimate a price if the bid or ask are None or 0.0')
-        return round((quote.bid + quote.ask) / 2, 2)
+
+        if quote.bid is not None and quote.ask is None and quote.bid > 0.0 and quote.ask > 0.0:
+            return round((quote.bid + quote.ask) / 2, 2)
+
+        if quote.price is not None:
+            return round(quote.price,2)
+
+        raise Exception('Estimator.estimate: Cannot estimate a price if the bid or ask are None or 0.0')
 
 
 class MidpointEstimator(Estimator):

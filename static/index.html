@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An open source simulated options brokerage for paper trading, algorithmic interfaces and backtesting.">
+    <meta name="author" content="philipodonnell">
+    <title>PaperBroker</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+    <!-- Bootstrap Core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100,400italic,300italic,100italic,500italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,900,700,800,600,500,300' rel='stylesheet' type='text/css'>
+    <!-- Custom CSS -->
+    <style>
+    body {
+        padding-top: 70px;
+        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+        font-family: Roboto;
+    }
+
+    .order-expiration {
+        margin-left: 8px;
+    }
+
+    .order-option-price {
+        margin-left: 8px;
+    }
+    /*
+    .current-leg-container td {
+        font-size:10px;
+        padding:4px;
+    }
+    */
+
+    .order-leg-quantity {
+        width: 60px;
+    }
+
+    .order-underlying-symbol {
+        width: 100px;
+    }
+    .order-leg-clear {
+        font-size:20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .leg-part {
+        background-color: #EFEFEF;
+        padding-bottom:32px;
+        margin-bottom: 16px;
+    }
+    </style>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://github.com/philipodonnell/paperbroker">PaperBroker Demo</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="https://github.com/philipodonnell/paperbroker">Github</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <!-- Page Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <h3>New Order:</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="order-underlying-symbol">Underlying Symbol:</label>
+                                <input type="text" class="form-control order-underlying-symbol" placeholder="Underlying Symbol">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-xs-9 leg-part">
+                        <h3>Legs:</h3>
+                        <form>
+                            <div class="form-group">
+                                <table class="current-leg-container" width="100%">
+                                    <tr class="order-leg legT hidden">
+                                        <td class="order-leg-symbol">AAPL171117C00050000</td>
+                                        <td>
+                                            <select class="order-leg-side">
+                                                <option value='bto' selected="selected">BuyOpen</option>
+                                                <option value='sto'>SellOpen</option>
+                                                <option value='btc'>BuyClose</option>
+                                                <option value='stc'>SellClose</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input class="order-leg-quantity" type="text" value="1" />
+                                        </td>
+                                        <td>
+                                            <div class="order-leg-price">4.56</div>
+                                        </td>
+                                        <td>
+                                            <a class='order-leg-clear'>x</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </form>
+                        <div class="order-simulation">
+                            <div>Cash: <span class='cash-before'></span> - <span class='cash-after'></span></div> 
+                            <div>Margin: <span class='margin-before'></span> - <span class='margin-after'></span></div> 
+                        </div>
+                        <button class='order-submit'>Submit Order</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <p>Click An Expiration: <span class="order-expirations-container"></span></p>
+                    <p>Click a Price to Add:
+                        <div class="order-option-prices-container"></div>
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <h3>Positions:</h3>
+                <div class='account'>
+                    <div class="alert alert-warning alert-dismissible new-account-warning hidden" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Warning!</strong> Your account id cannot be retrieved after you close your browser. Record it now. Add this link to your bookmarks. 
+                        <a class="account-access-url"></a>
+                    </div>
+                    <div>Account: <span class='account-id'></span></div>
+                    <div>Cash: $<span class='cash'></span></div>
+                    <table width="100%" class="positions-container">
+                        <tr class="positionT hidden">
+                            <td>
+                            <a class="label label-default position-symbol">AAPL171117P00115000</a>
+                            </td>
+                            <td><span class="position-quantity">+1</span></td>
+                            <td><span class="position-cost-basis">453</span></td>
+                            <td><span class="position-price">5.63</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+    <!-- jQuery Version 1.11.1 -->
+    <!--<script src="js/jquery.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

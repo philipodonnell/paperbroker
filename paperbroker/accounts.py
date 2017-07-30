@@ -19,7 +19,7 @@ class Account():
 
     def __init__(self, positions=None, account_id:str=None):
         self.account_id = account_id if account_id is not None else 'account' + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        self.cash = 0.0
+        self.cash = 10000
         self.maintenance_margin = 0.0
         self.positions = positions if positions is not None else []
 
