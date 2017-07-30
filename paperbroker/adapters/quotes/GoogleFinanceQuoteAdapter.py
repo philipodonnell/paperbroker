@@ -11,9 +11,17 @@ from googlefinance import getQuotes
 """
 class GoogleFinanceQuoteAdapter(QuoteAdapter):
 
+    def __init__(self):
+        self._cache = {}
+    def _set_cache(self, quote):
+        self._cache[quote.asset.symbol] = quote
+        return quote
+
     def get_quote(self, asset):
 
         asset = asset_factory(asset)
+        if self._cache.get(asset.symbol) is not None:
+            return self._cache.get(asset.symbol)
 
         if isinstance(asset, Option):
 
@@ -38,7 +46,7 @@ class GoogleFinanceQuoteAdapter(QuoteAdapter):
 
     def get_expiration_dates(self, underlying_asset=None):
         oc = OptionChain('NASDAQ:' + asset_factory(underlying_asset).symbol)
-        return list(set([asset_factory(_['s']).expiration_date for _ in (oc.calls + oc.puts)]))
+        return sorted(list(set([asset_factory(_['s']).expiration_date for _ in (oc.calls + oc.puts)])))
 
     def get_options(self, underlying_asset=None, expiration_date=None):
         oc = OptionChain('NASDAQ:' + asset_factory(underlying_asset).symbol)
@@ -52,6 +60,7 @@ class GoogleFinanceQuoteAdapter(QuoteAdapter):
                                 bid=float(option['b']) if option['b'] != '-' else None,
                                 ask=float(option['a']) if option['a'] != '-' else None,
                                 underlying_price = underlying_quote.price)
+                self._set_cache(quote)
                 out.append(quote)
 
         return out
