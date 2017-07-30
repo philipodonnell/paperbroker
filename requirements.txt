@@ -3,3 +3,4 @@ Flask==0.12.2
 googlefinance==0.7
 ivolat3==0.0.0
 jsonpickle==0.9.4
+ujson

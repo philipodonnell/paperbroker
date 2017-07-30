@@ -1,86 +1,7 @@
-import jsonpickle
 from flask import Flask, request, send_from_directory
 from paperbroker import PaperBroker
 from paperbroker.orders import Order
-from copy import copy
-#from json import json_dumps
-import inspect
-import simplejson
 import ujson
-
-
-from functools import wraps
-from flask import Flask, redirect, jsonify
-app = Flask(__name__)
-
-def get_http_exception_handler(app):
-    """Overrides the default http exception handler to return JSON."""
-    handle_http_exception = app.handle_http_exception
-    @wraps(handle_http_exception)
-    def ret_val(exception):
-        exc = handle_http_exception(exception)
-        return jsonify({'code':exc.code, 'message':exc.description}), exc.code
-    return ret_val
-
-# Override the HTTP exception handler.
-app.handle_http_exception = get_http_exception_handler(app)
-
-from json import JSONEncoder
-class PaperBrokerEncoder(JSONEncoder):
-
-    def call_super(self, o):
-        return super(PaperBrokerEncoder, self).default(o)
-
-    def object_to_dict(self, o):
-        d = {}
-        for key in inspect.getmembers(o):
-            if key[0][0] != '_':
-                if not hasattr(getattr(o, key[0]), '__call__'):
-                    d[key[0]] = self.next_stage(getattr(o, key[0]))
-        return d
-
-    """
-    def can_dumps(self, o):
-        try:
-            if json.dumps(o) is not None:
-                return True
-            else:
-                return False
-        except:
-            return False
-    """
-    def has_dict(self, o):
-        try:
-            if o.__dict__ is not None:
-                return True
-            else:
-                return False
-        except:
-            return False
-
-    def is_arrayish(self, o):
-        try:
-
-            if o.__iter__ and not isinstance(o, str):
-                return True
-            else:
-                return False
-        except:
-            return False
-
-    def next_stage(self, o):
-        if self.is_arrayish(o):
-            return list([self.next_stage(_) for _ in o])
-        if self.has_dict(o):
-            return self.object_to_dict(o)
-        return o
-
-    def default(self, o):
-        o = self.next_stage(o)
-        return self.call_super(o)
-
-
-
 
 # initialize a PaperBroker with defaults
 broker = PaperBroker()
@@ -88,11 +9,10 @@ broker = PaperBroker()
 # set the project root directory as the static folder, you can set others.
 app = Flask(__name__, static_url_path='')
 
-# helper function to return pickled json
+# helper function to return json
 def json(data):
     global app
     response = app.response_class(
-        #response=PaperBrokerEncoder().encode(data).replace('NaN', 'null'),
         response=ujson.dumps(data).replace('NaN', 'null'),
         status=200,
         mimetype='application/json'
@@ -206,45 +126,6 @@ def send_index():
     return send_from_directory('static', 'index.html')
 
 
-
-"""
-
-@app.route("/live/sell_otm_vertical_spread_quick_order_page/<symbol>", methods=['GET'])
-def simulate_order(account: Account, order: Order, estimator: Estimator = None):
-    account_after = self.market_adapter.simulate_order(account=account, order=order, estimator=estimator)
-    validate_account(account_after)
-    return account_after
-
-
-@app.route("/live/sell_otm_vertical_spread_quick_order_page/<symbol>", methods=['GET'])
-def close_position(account: Account, position=None):
-    return self.close_positions(account, [position])
-
-
-@app.route("/live/sell_otm_vertical_spread_quick_order_page/<symbol>", methods=['GET'])
-def close_positions(account: Account, positions=None):
-    if positions is None:
-        positions = []
-
-    btc = {}
-    stc = {}
-    assets_by_symbol = {}
-    for p in positions:
-        assets_by_symbol[p.asset.symbol] = p.asset
-        if p.quantity > 0:
-            stc[p.asset.symbol] = stc.get(p.asset.symbol, 0) + p.quantity
-        else:
-            btc[p.asset.symbol] = btc.get(p.asset.symbol, 0) + p.quantity
-
-    o = Order()
-    for s in stc.keys():
-        o.add_leg(order_type='stc', asset=assets_by_symbol[s], quantity=-1 * stc[s])
-    for b in btc.keys():
-        o.add_leg(order_type='btc', asset=assets_by_symbol[b], quantity=abs(btc[b]))
-
-    self.enter_order(account, o)
-
-"""
 
 if __name__ == "__main__":
     port = 8231
