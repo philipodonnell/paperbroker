@@ -8,11 +8,13 @@ pip install git+https://github.com/philipodonnell#egg=paperbroker
 from paperbroker import PaperBroker
 broker=PaperBroker()
 
-or to use the HTTP REST/JSON API:
+or to use the HTTP REST/JSON API and/or the UI interface:
 
 git clone https://github.com/philipodonnell/paperbroker
 
-install dependencies and execute with python server.py
+install dependencies and execute with python server.py.
+navigate your browser to http://localhost:8231/
+
 ```
 
 ## Features
