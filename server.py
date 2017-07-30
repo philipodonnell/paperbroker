@@ -1,7 +1,86 @@
 import jsonpickle
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from paperbroker import PaperBroker
 from paperbroker.orders import Order
+from copy import copy
+#from json import json_dumps
+import inspect
+import simplejson
+import ujson
+
+
+from functools import wraps
+from flask import Flask, redirect, jsonify
+app = Flask(__name__)
+
+def get_http_exception_handler(app):
+    """Overrides the default http exception handler to return JSON."""
+    handle_http_exception = app.handle_http_exception
+    @wraps(handle_http_exception)
+    def ret_val(exception):
+        exc = handle_http_exception(exception)
+        return jsonify({'code':exc.code, 'message':exc.description}), exc.code
+    return ret_val
+
+# Override the HTTP exception handler.
+app.handle_http_exception = get_http_exception_handler(app)
+
+from json import JSONEncoder
+class PaperBrokerEncoder(JSONEncoder):
+
+    def call_super(self, o):
+        return super(PaperBrokerEncoder, self).default(o)
+
+    def object_to_dict(self, o):
+        d = {}
+        for key in inspect.getmembers(o):
+            if key[0][0] != '_':
+                if not hasattr(getattr(o, key[0]), '__call__'):
+                    d[key[0]] = self.next_stage(getattr(o, key[0]))
+        return d
+
+    """
+    def can_dumps(self, o):
+        try:
+            if json.dumps(o) is not None:
+                return True
+            else:
+                return False
+        except:
+            return False
+    """
+    def has_dict(self, o):
+        try:
+            if o.__dict__ is not None:
+                return True
+            else:
+                return False
+        except:
+            return False
+
+    def is_arrayish(self, o):
+        try:
+
+            if o.__iter__ and not isinstance(o, str):
+                return True
+            else:
+                return False
+        except:
+            return False
+
+    def next_stage(self, o):
+        if self.is_arrayish(o):
+            return list([self.next_stage(_) for _ in o])
+        if self.has_dict(o):
+            return self.object_to_dict(o)
+        return o
+
+    def default(self, o):
+        o = self.next_stage(o)
+        return self.call_super(o)
+
+
+
 
 # initialize a PaperBroker with defaults
 broker = PaperBroker()
@@ -13,7 +92,8 @@ app = Flask(__name__, static_url_path='')
 def json(data):
     global app
     response = app.response_class(
-        response=jsonpickle.encode(data, unpicklable=False),
+        #response=PaperBrokerEncoder().encode(data).replace('NaN', 'null'),
+        response=ujson.dumps(data).replace('NaN', 'null'),
         status=200,
         mimetype='application/json'
     )
@@ -27,12 +107,16 @@ def get_quote(asset:str):
 
 
 @app.route("/quotes/<asset>/options/<expiration_date>", methods=['GET'])
-def get_options(asset=None, expiration_date=None):
-    return json(broker.get_options(asset, expiration_date))
+def get_options(asset=None, expiration_date=None, only_priceable=True):
+    if only_priceable:
+        return json([_ for _ in broker.get_options(asset, expiration_date) if _.is_priceable()])
+    else:
+        return json([_ for _ in broker.get_options(asset, expiration_date)])
 
 
 @app.route("/expirations/<asset>", methods=['GET'])
 def get_expiration_dates(asset=None):
+
     return json(broker.get_expiration_dates(asset))
 
 
@@ -92,14 +176,14 @@ def simulate_order(account_id: str):
 @app.route("/accounts/<account_id>/orders", methods=['POST'])
 @app.route("/accounts/<account_id>/orders/create", methods=['GET'])
 def enter_order(account_id: str, simulate=None):
-    simulate = (not ( not (request.args.get('simulate', False) ) )) if simulate is not None else simulate
+    simulate = not(not(request.args.get('simulate', False))) if simulate is None else simulate
 
     order = Order()
     for x in range(4):
-        if request.args.get('asset[{}]'.format(x), None) is not None:
-            asset = request.args.get('asset[{}]'.format(x), None)
-            order_type = request.args.get('order_type[{}]'.format(x), None)
-            quantity = request.args.get('quantity[{}]'.format(x), None)
+        if request.args.get('legs[{}][asset]'.format(x-1), None) is not None:
+            asset = request.args.get('legs[{}][asset]'.format(x-1), None)
+            order_type = request.args.get('legs[{}][order_type]'.format(x-1), None)
+            quantity = request.args.get('legs[{}][quantity]'.format(x-1), None)
 
             if order_type is None:
                 raise Exception('order_type is a required field')
@@ -109,8 +193,8 @@ def enter_order(account_id: str, simulate=None):
 
             order.add_leg(asset=asset, order_type=order_type, quantity=quantity)
 
-    return json(broker.enter_order(account = broker.get_account(account_id=account_id), order=order, simulate=simulate))
-
+    account = broker.get_account(account_id=account_id)
+    return json(broker.enter_order(account = account, order=order, simulate=simulate))
 
 @app.route('/<path:path>')
 def send_static(path):
