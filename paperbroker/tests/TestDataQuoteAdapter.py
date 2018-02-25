@@ -63,7 +63,7 @@ class TestDataQuoteAdapter(QuoteAdapter):
     def load_testdata_cache(self):
         global testdata_keyvalue_cache
         testdata_keyvalue_cache = {}
-        filename = os.path.join(os.path.dirname(__file__), 'test_data\\data.csv.gz')
+        filename = os.path.join(os.path.dirname(__file__), 'test_data/data.csv.gz')
         with gzip.open(filename, 'rt') as f:
             reader = csv.reader(f, delimiter='\t')
             for row in reader:
