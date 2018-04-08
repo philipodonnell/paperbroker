@@ -14,10 +14,10 @@ class Leg(object):
         # automatically correct the signs of the quantity and price
         if order_type[0] == 's':
             quantity = abs(quantity) * -1
-            price = (abs(quantity) * -1) if price is not None else None
+            price = (abs(price) * -1) if price is not None else None
         else:
             quantity = abs(quantity) * 1
-            price = (abs(quantity) * 1) if price is not None else None
+            price = (abs(price) * 1) if price is not None else None
 
         self.asset = asset
         self.quantity = quantity
